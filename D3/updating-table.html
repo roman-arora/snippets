@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Analytics table</title>
+		<script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript">
+            $(document).ready(function() {
+            		setInterval( function() {updateTable();}, 2 * 1000);
+            });
+            
+            var dataset = generateRandomCountryData();
+            
+            function populateTableHeaders() 
+			{
+				d3.select("thead")
+            		.selectAll("th")
+            		.data(d3.keys(dataset[0]))
+            		.enter()
+            		.append("th")
+            		.style("border", "1px black solid")
+            		.style("padding", "10px")
+            		.text(function(d) {
+                		return d.substring(0, 1).toUpperCase() + d.substring(1);
+            		});
+			}
+			
+			function updateAggregateDataTable() 
+			{
+            // create or update rows
+            d3.select("tbody").selectAll("tr").data(dataset).enter().append("tr");
+
+            // update cells
+            var rows = d3.select("tbody").selectAll("tr");
+            rows.selectAll("td")
+            		.data(function(d) {
+                		return d3.values(d);
+            		})
+            		.enter()
+            		.append("td")
+            		.style("border", "1px black solid")
+            		.style("padding", "10px")
+            		.text(function(d) {
+                		return d;
+            		});
+            		
+            	rows.selectAll("td")
+            		.data(function(d) {
+                		return d3.values(d);
+            		})
+            		.text(function(d) {
+                		return d;
+            		});
+			}
+			
+            function generateRandomCountryData() {
+                var dataset = new Array();
+
+                var countries = new Array("US", "DE", "FR", "ES", "RS");
+                var properties = new Array("total", "successful", "failed", "barred", "capped");
+                countries.forEach(function(country) {
+                    var countryData = new Object();
+                    properties.forEach(function(property) {
+                        countryData[property] = Math.floor((Math.random() * 50));
+                    });
+                    dataset.push(countryData);
+                });
+
+                return dataset;
+            }
+
+			function updateTable() {
+				dataset = generateRandomCountryData();
+				updateAggregateDataTable(); 
+			}
+            
+		</script>
+	</head>
+	<body>
+		<table id="table" style="border-collapse: collapse; border: 2px black solid">
+			<thead>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+
+		<script type="text/javascript">
+			populateTableHeaders();
+		</script>
+	</body>
+</html>
